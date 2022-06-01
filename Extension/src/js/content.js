@@ -1,9 +1,13 @@
+// function name should be like this => getFormURLEncoded
 function getFormURLencoded(sourceArray){
     let jsondata = {};
+    //wrong use of map. map is used to return a new array not perform some operations on original array. we use forEach for that.
+    //use functional programming. 
     sourceArray.map((item,id)=>{
         jsondata[id]=item;
     })
     let formBody = [];
+    //Do NOT use for loop unless necessary. //Again use functional programming.
     for (let id in jsondata) {
     let encodedKey = encodeURIComponent('src');
     let encodedValue = encodeURIComponent(jsondata[id]);
@@ -13,6 +17,19 @@ function getFormURLencoded(sourceArray){
     return formBody;
 }
 function getImages(){
+    /**
+     * better way to write this function is to use early return makes it more readable=> 
+     * 
+     * const images = Array.from(document.querySelectorAll("img"));
+     * 
+     * if(!images){
+     *  return undefined
+     * }
+     * 
+     * return getFormURLencoded(images.map(item => item.src))
+     * 
+     * 
+     */
     const images = Array.from(document.querySelectorAll("img"));
     if(images){
         const imagesources = images.map(item => item.src)
@@ -23,6 +40,7 @@ function getImages(){
     }
 }
 function getHeading(){
+    //Only h1 works.
     const headings = Array.from(document.querySelectorAll("h1, h2, h3, h4, h5, h6"));
     if(headings){
         const headingsources = headings.map(item => item.innerText)
