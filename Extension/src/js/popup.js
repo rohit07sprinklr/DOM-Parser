@@ -1,4 +1,5 @@
 document.querySelector('form').addEventListener('change',function(){
+    // use switch case for such cases. makes code more readable.
     if(document.getElementById('h1').checked){
         chrome.runtime.sendMessage({
             currentOption: 'Heading',

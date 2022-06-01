@@ -1,3 +1,4 @@
+//all folders should start with small case letters ( camelCase )
 const express = require("express");
 var bodyParser = require('body-parser')
 const clear = require('console-clear');
