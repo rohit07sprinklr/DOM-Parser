@@ -1,46 +1,33 @@
-function getFormURLencoded(sourceArray){
-    let jsondata = {};
-    sourceArray.map((item,id)=>{
-        jsondata[id]=item;
-    })
-    let formBody = [];
-    for (let id in jsondata) {
-    let encodedKey = encodeURIComponent('src');
-    let encodedValue = encodeURIComponent(jsondata[id]);
-    formBody.push(encodedKey + "=" + encodedValue);
-    }
-    formBody = formBody.join("&");
-    return formBody;
+function getFormURLEncoded(sourceArray){
+    let dict = {};
+    let encodedForm = [];
+    sourceArray.forEach((item,id)=>{ dict[id] = item });
+    Object.keys(dict).forEach(key => {
+        encodedForm.push(encodeURIComponent('src') + "=" + encodeURIComponent(dict[key]));
+    });
+    encodedForm = encodedForm.join("&");
+    return encodedForm;
 }
 function getImages(){
     const images = Array.from(document.querySelectorAll("img"));
-    if(images){
-        const imagesources = images.map(item => item.src)
-        return getFormURLencoded(imagesources);
+    if(!images){
+        return undefined
     }
-    else{
-        return undefined;
-    }
+    return getFormURLEncoded(images.map(item => item.src))
 }
 function getHeading(){
-    const headings = Array.from(document.querySelectorAll("h1, h2, h3, h4, h5, h6"));
-    if(headings){
-        const headingsources = headings.map(item => item.innerText)
-        return getFormURLencoded(headingsources);
+    const headings = Array.from(document.querySelectorAll("h1"));
+    if(!headings){
+        return undefined
     }
-    else{
-        return undefined;
-    }
+    return getFormURLEncoded(headings.map(item => item.innerText))
 }
 function getLinks(){
     const links = Array.from(document.querySelectorAll("a"));
-    if(links){
-        const linksource = links.map(item => item.href);
-        return getFormURLencoded(linksource);
+    if(!links){
+        return undefined
     }
-    else{
-        return undefined;
-    }
+    return getFormURLEncoded(links.map(item => item.href))
 }
 async function fetchResources(resourceform){
     fetch('http://localhost:3000/resources',{
@@ -54,17 +41,19 @@ async function fetchResources(resourceform){
 }
 
 chrome.runtime.onMessage.addListener((message) => {
-    if(message.currentOption == 'Heading'){
-        const headingform = getHeading();
-        fetchResources(headingform);
-    }
-    else if(message.currentOption == 'Image'){
-        const imagesform = getImages(); 
-        fetchResources(imagesform);
-    }
-    else if(message.currentOption == 'Link'){
-        const linkform = getLinks();
-        fetchResources(linkform);
+    switch(message.currentOption){
+        case 'Heading':
+            const headingform = getHeading();
+            fetchResources(headingform);
+            break;
+        case 'Image':
+            const imagesform = getImages(); 
+            fetchResources(imagesform);
+            break;
+        case 'Link':
+            const linkform = getLinks();
+            fetchResources(linkform);
+            break;
     }
 });
 
